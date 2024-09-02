@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SuperUser Registration</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f4f7f6;
+        }
+        .register_container {
+            max-width: 800px;
+            margin: auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s, transform 0.3s;
+        }
+        .register_container:hover {
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            transform: scale(1.02);
+        }
+        .register_container h2 {
+            margin-bottom: 20px;
+            font-size: 1.75rem;
+            color: #333;
+        }
+        .register_button {
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-top: 15px;
+            transition: background-color 0.3s;
+        }
+        .register_button:hover {
+            background-color: #218838;
+        }
+        .form-group {
+            margin-bottom: 5px;
+        }
+        .error-message {
+            color: red;
+            font-size: 0.875rem;
+            text-align: center;
+            margin-top: 10px;
+        }
+        .required:after {
+            content: "*";
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="register_container">
+        <h2 class="text-center">SuperUser Registration</h2>
+        <form id="register-form">
+            {% csrf_token %}
+
+            <!-- Form Grid -->
+            <div class="form-row">
+                <!-- First Name -->
+                <div class="form-group col-md-6">
+                    <label for="id_first_name" class="required">First Name:</label>
+                    <input type="text" class="form-control" id="id_first_name" name="first_name" required>
+                </div>
+
+                <!-- Last Name -->
+                <div class="form-group col-md-6">
+                    <label for="id_last_name" class="required">Last Name:</label>
+                    <input type="text" class="form-control" id="id_last_name" name="last_name" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <!-- Email -->
+                <div class="form-group col-md-12">
+                    <label for="id_email" class="required">Email:</label>
+                    <input type="email" class="form-control" id="id_email" name="email" required>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="id_password" class="required">Password:</label>
+                    <input type="password" class="form-control" id="id_password" name="password" required>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="id_confirm_password" class="required">Confirm Password:</label>
+                    <input type="password" class="form-control" id="id_confirm_password" name="confirm_password" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <!-- Country -->
+                <div class="form-group col-md-6">
+                    <label for="id_country">Country</label>
+                    <input type="text" class="form-control" id="id_country" name="country">
+                </div>
+                <!-- State -->
+                <div class="form-group col-md-6">
+                    <label for="id_state">State</label>
+                    <input type="text" class="form-control" id="id_state" name="state">
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <!-- City -->
+                <div class="form-group col-md-6">
+                    <label for="id_city" class="required">City:</label>
+                    <input type="text" class="form-control" id="id_city" name="city">
+                </div>
+
+                <!-- Pin Code -->
+                <div class="form-group col-md-6">
+                    <label for="id_pin_code" class="required">Pin Code:</label>
+                    <input type="text" class="form-control" id="id_pin_code" name="pin_code" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <!-- Address -->
+                <div class="form-group col-md-12">
+                    <label for="id_address" class="required">Address:</label>
+                    <input type="text" class="form-control" id="id_address" name="address" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <!-- Phone ISD Code -->
+                <div class="form-group col-md-2">
+                    <label for="id_phone_isd_code">ISD Code:</label>
+                    <input type="text" class="form-control" id="id_phone_isd_code" name="phone_isd_code">
+                </div>
+
+                <!-- Phone Number -->
+                <div class="form-group col-md-6">
+                    <label for="id_phone_number">Phone Number:</label>
+                    <input type="text" class="form-control" id="id_phone_number" name="phone_number">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <!-- Fax Number -->
+                <div class="form-group col-md-12">
+                    <label for="id_fax_number">Fax Number:</label>
+                    <input type="text" class="form-control" id="id_fax_number" name="fax_number">
+                </div>
+            </div>
+
+            <div class="text-center">
+                <button type="submit" class="btn register_button">Register</button>
+            </div>
+            <p class="text-center mt-3">Already have an account? <a href="{% url 'login' %}">Login</a></p>
+
+            <!-- Error message -->
+            <p id="register-message" class="error-message text-center"></p>
+        </form>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        document.getElementById('register-form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the default form submission
+            
+            const form = event.target;
+            const formData = new FormData(form);
+
+            fetch("{% url 'user-auth' %}?action=register", {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': document.querySelector('input[name="csrfmiddlewaretoken"]').value
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Redirect to the index page after successful registration
+                    window.location.href = "{% url 'index' %}";
+                } else {
+                    return response.json().then(data => {
+                        document.getElementById('register-message').textContent = data.error || 'Registration failed';
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error during registration:', error);
+                document.getElementById('register-message').textContent = 'Error during registration';
+            });
+        });
+
+        document.getElementById('id_pin_code').addEventListener('blur', function() {
+            const pinCode = this.value.trim();
+            const apiUrl = "{% url 'fetch_location' %}";
+
+            if (pinCode.length === 6) {
+                fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-CSRFToken': document.querySelector('input[name="csrfmiddlewaretoken"]').value
+                    },
+                    body: new URLSearchParams({ pincode: pinCode })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        document.getElementById('register-message').textContent = data.error;
+                        clearLocationFields();
+                    } else {
+                        document.getElementById('id_city').value = data.city || '';
+                        document.getElementById('id_state').value = data.state || '';
+                        document.getElementById('id_country').value = data.country || '';
+                        document.getElementById('id_address').value = data.address || '';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching location:', error);
+                    clearLocationFields();
+                });
+            } else {
+                clearLocationFields();
+            }
+        });
+
+        function clearLocationFields() {
+            document.getElementById('id_city').value = '';
+            document.getElementById('id_state').value = '';
+            document.getElementById('id_country').value = '';
+            document.getElementById('id_address').value = '';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,174 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if id %}Edit Incident{% else %}Create Incident{% endif %}</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7f6;
+            padding-top: 30px;
+        }
+        #incident-container {
+            padding: 30px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: auto;
+            transition: box-shadow 0.3s, transform 0.3s;
+        }
+        #incident-container:hover {
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            transform: scale(1.02);
+        }
+        .incident_h3 {
+            color: #333;
+            font-weight: 600;
+        }
+        .form-divider {
+            border: 0;
+            border-top: 1px solid #e1e1e1;
+            margin: 20px 0;
+        }
+        .btn-custom {
+            border-radius: 25px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
+            border: none;
+        }
+        .btn-success-custom {
+            background: linear-gradient(135deg, #28a745, #218838);
+            color: #fff;
+        }
+        .btn-success-custom:hover {
+            background: linear-gradient(135deg, #218838, #1e7e34);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .btn-secondary-custom {
+            background: linear-gradient(135deg, #6c757d, #5a6268);
+            color: #fff;
+        }
+        .btn-secondary-custom:hover {
+            background: linear-gradient(135deg, #5a6268, #4e555b);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .form-control {
+            border-radius: 8px;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s;
+        }
+        .form-control:focus {
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+            border-color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="incident-container">
+        <div class="row mb-4">
+            <div class="col">
+                <h1 class="incident_h3 text-center">{% if id %}Edit Incident{% else %}Create Incident{% endif %}</h1>
+            </div>
+        </div>
+
+        <form id="incident-form" class="p-4" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="incident_id" value="{% if id %}{{ id }}{% endif %}">
+            <input type="hidden" name="reporter" value="{{ request.user.id }}">
+
+            <h3 class="incident_h3">Incident Details</h3>
+
+            <div class="form-group">
+                <label for="details"><strong>Incident Details:</strong></label>
+                <textarea id="details" name="details" class="form-control" placeholder="Enter incident details" required>{% if incident %}{{ incident.details }}{% endif %}</textarea>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-md-6">
+                    <label for="priority"><strong>Priority:</strong></label>
+                    <select id="priority" name="priority" class="form-control" required>
+                        <option value="Low" {% if incident and incident.priority == 'Low' %} selected {% endif %}>Low</option>
+                        <option value="Medium" {% if incident and incident.priority == 'Medium' %} selected {% endif %}>Medium</option>
+                        <option value="High" {% if incident and incident.priority == 'High' %} selected {% endif %}>High</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label for="status"><strong>Status:</strong></label>
+                    <select id="status" name="status" class="form-control" required>
+                        <option value="Open" {% if incident and incident.status == 'Open' %} selected {% endif %}>Open</option>
+                        <option value="In Progress" {% if incident and incident.status == 'In Progress' %} selected {% endif %}>In Progress</option>
+                        <option value="Closed" {% if incident and incident.status == 'Closed' %} selected {% endif %}>Closed</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-md-6">
+                    <label for="entity_type"><strong>Entity Type:</strong></label>
+                    <select id="entity_type" name="entity_type" class="form-control" required>
+                        <option value="Individual" {% if incident and incident.entity_type == 'Individual' %} selected {% endif %}>Individual</option>
+                        <option value="Enterprise" {% if incident and incident.entity_type == 'Enterprise' %} selected {% endif %}>Enterprise</option>
+                        <option value="Government" {% if incident and incident.entity_type == 'Government' %} selected {% endif %}>Government</option>
+                    </select>
+                </div>
+            </div>
+
+            <hr class="form-divider">
+
+            <div class="text-center">
+                <button type="submit" class="btn btn-success-custom btn-custom">{% if id %}Update{% else %}Create{% endif %}</button>
+                <a href="{% url 'incident_list' %}" class="btn btn-secondary-custom btn-custom ml-3">Back to List</a>
+            </div>
+        </form>
+
+        <script>
+            $(document).ready(function() {
+                const form = $('#incident-form');
+                const csrftoken = $('input[name="csrfmiddlewaretoken"]').val();
+            
+                form.attr('action', "{% if id %}{% url 'edit_incident' id=id %}{% else %}{% url 'create_incident' %}{% endif %}");
+            
+                form.on('submit', function(event) {
+                    event.preventDefault();
+                    const formData = form.serializeArray();
+                    const data = {};
+                    formData.forEach(item => {
+                        data[item.name] = item.value;
+                    });
+        
+                    const method = "{% if id %}PATCH{% else %}POST{% endif %}";
+            
+                    $.ajax({
+                        url: form.attr('action'),
+                        method: method,
+                        data: JSON.stringify(data),
+                        contentType: 'application/json; charset=utf-8',
+                        headers: {
+                            'X-CSRFToken': csrftoken
+                        },
+                        success: function(response) {
+                            alert('Incident saved successfully');
+                            window.location.href = "{% url 'incident_list' %}";
+                        },
+                        error: function(xhr) {
+                            alert('Error saving incident: ' + xhr.responseText);
+                        }
+                    });
+                });
+            });
+        </script>
+        
+    </div>
+</body>
+</html>

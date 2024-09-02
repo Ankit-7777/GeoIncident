@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Login</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" 
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" 
+          crossorigin="anonymous">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .form-container {
+            background-color: #ffffff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            padding: 30px;
+            max-width: 400px;
+            width: 100%;
+        }
+        .login_button {
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 10px;
+            cursor: pointer;
+        }
+        .login_button:hover {
+            background-color: #45a049;
+        }
+        .forget_btn, .register_btn {
+            text-align: center;
+            margin-top: 15px;
+        }
+        .forget_btn a, .register_btn a {
+            color: #4caf50;
+            text-decoration: none;
+        }
+        .forget_btn a:hover, .register_btn a:hover {
+            text-decoration: underline;
+        }
+        .error-message {
+            color: red;
+            font-size: 0.875rem;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2 class="text-center">Login</h2>
+        <p class="register_btn mt-3">
+            New here? <a href="{% url 'register' %}">Create an account</a> to get started!
+        </p>
+        <form id="login-form">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">@</span>
+                    </div>
+                    <input type="text" name="email" id="email" class="form-control" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">&#128274;</span>
+                    </div>
+                    <input type="password" name="password" id="password" class="form-control" required>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-block login_button">Login</button>
+            <p id="error-message" class="error-message"></p>
+        </form>
+        <p class="forget_btn mt-3">
+            <a href="{% url 'password_reset' %}">Forgot Password?</a>
+        </p>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" 
+            integrity="sha384-q8i/X+965DzO0rT7abK3d8aLw4+fi6eFf5d5t7G8zz4tI5y5uU1Yg5Uj2vo8c5xW" 
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" 
+            integrity="sha384-UOaG6XAswC4K1D1c8UR8F2E8W6l54M3c2M2xF2bXjsJ3tkO7yztV5z7H4ofP7h5P" 
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" 
+            integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" 
+            crossorigin="anonymous"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('login-form');
+            if (form) {
+                form.addEventListener('submit', function(event) {
+                    event.preventDefault();
+                    const email = document.getElementById('email').value;
+                    const password = document.getElementById('password').value;
+
+                    fetch('auth/?action=login', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': getCookie('csrftoken') // Ensure CSRF token is included
+                        },
+                        body: JSON.stringify({
+                            email: email,
+                            password: password
+                        }),
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.token) {
+                            localStorage.setItem('refresh_token', data.token.refresh); 
+                            localStorage.setItem('access_token', data.token.access); 
+                            window.location.href = '/index/'; // Redirect to index page or another valid URL
+                        } else {
+                            displayErrors(data.error);
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+                });
+            }
+        });
+
+        function displayErrors(errors) {
+            const errorMessage = document.getElementById('error-message');
+
+            if (errors) {
+                if (errors.non_field_errors) {
+                    errorMessage.innerHTML = errors.non_field_errors.join('<br>');
+                } else {
+                    errorMessage.innerHTML = 'Login failed.';
+                }
+            } else {
+                errorMessage.innerHTML = 'An unexpected error occurred.';
+            }
+        }
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incident Details</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7f6;
+            padding-top: 30px;
+        }
+        #incident-detail-container {
+            padding: 30px;
+            background-color: #ffffff;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            transition: box-shadow 0.3s, transform 0.3s;
+            margin-top: 20px;
+        }
+        #incident-detail-container:hover {
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            transform: scale(1.02);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        .profile-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-gap: 20px;
+        }
+        .profile-item {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, background-color 0.3s;
+        }
+        .profile-item:hover {
+            transform: translateY(-5px);
+            background-color: #f1f1f1;
+        }
+        .docspan {
+            font-size: 1.1rem;
+            color: #495057;
+            margin-left: 10px;
+        }
+        .btn-custom {
+            border-radius: 25px;
+            padding: 12px 25px;
+            font-size: 1rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
+            border: none;
+        }
+        .btn-warning {
+            background: linear-gradient(135deg, #f39c12, #f1c40f);
+            color: #fff;
+        }
+        .btn-warning:hover {
+            background: linear-gradient(135deg, #e67e22, #f39c12);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: #fff;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #0056b3, #004085);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="incident-detail-container">
+        <h1 class="text-center">Incident Details</h1>
+        <div class="profile-info">
+            <div class="profile-item">
+                <strong>ID:</strong>
+                <span class="docspan">{{ incident.id }}</span>
+            </div>
+            <div class="profile-item">
+                <strong>Incident ID:</strong>
+                <span class="docspan">{{ incident.incident_id }}</span>
+            </div>
+            <div class="profile-item">
+                <strong>Details:</strong>
+                <span class="docspan">{{ incident.details }}</span>
+            </div>
+            <div class="profile-item">
+                <strong>Status:</strong>
+                <span class="docspan">{{ incident.status }}</span>
+            </div>
+            <div class="profile-item">
+                <strong>Reporter:</strong>
+                <span class="docspan">{{ incident.reporter }}</span>
+            </div>
+            <div class="profile-item">
+                <strong>Priority:</strong>
+                <span class="docspan">{{ incident.priority }}</span>
+            </div>
+            <div class="profile-item">
+                <strong>Reported Date:</strong>
+                <span class="docspan">{{ incident.reported_date }}</span>
+            </div>
+            <div class="profile-item">
+                <strong>Entity Type:</strong>
+                <span class="docspan">{{ incident.entity_type }}</span>
+            </div>
+        </div>
+        <div class="text-center mt-4">
+            <a href="{% url 'edit_incident' incident.id %}" class="btn btn-warning btn-custom">Edit</a>
+            <a href="{% url 'incident_list' %}" class="btn btn-primary btn-custom">Back to List</a>
+        </div>
+    </div>
+</body>
+</html>
